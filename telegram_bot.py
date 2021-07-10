@@ -1,4 +1,3 @@
-import requests
 import telebot
 from api.telebot_api import Telebot
 
