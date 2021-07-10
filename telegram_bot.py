@@ -1,7 +1,7 @@
 import telebot
 from api.telebot_api import Telebot
 
-bot = telebot.TeleBot('1889446734:AAE_74_036g0xCNmQNwLrtO9C3MNeC0i_tk')
+bot = telebot.TeleBot('TOKEN')
 
 @bot.message_handler(commands=['inventory', 'help'])
 def start_bot(message):
