@@ -33,7 +33,7 @@ class Inventory:
                         "name": elem.get('name'),
                         "market_hash_name": elem.get('market_hash_name'),
                         "type": elem.get('type'),
-                        "description": [],
+                        "description": elem.get('descriptions'),
                         "icon_url": elem.get('icon_url'),
                         "count": count
                     }
