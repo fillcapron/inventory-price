@@ -59,7 +59,7 @@ def get_price(item_name, conversion):
     try:
         response = requests.get(f'https://csgo.backpack.tf/market_search?text={item_name}&conversion={conversion}')
         data = response.json()
-        if not len(data):
+        if data.get('items'):
             first_item_list = data.get('items')[0]
             item_name_data = first_item_list.get('itemName')
             buy_price = first_item_list.get('buyPrice')
