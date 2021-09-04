@@ -13,12 +13,13 @@ class Inventory:
     def fetch(self, id, app):
         try:
             response = requests.get(f'http://steamcommunity.com/profiles/{id}/inventory/json/{app}/2/')
+            print(response.json())
             return response.json()
         except:
             raise ValueError
 
     def get_inventory(self):
-        try:
+        if len(self.rg_inventory):
             items = []
             for elem in self.rg_descriptions.values():
                 count = self.inv_count(elem.get('classid'))
@@ -36,8 +37,8 @@ class Inventory:
                     }
                 )
             return items
-        except:
-            return self.data
+        else:
+            return []
 
     def inv_count(self, data):
         item = self.get_classid()
