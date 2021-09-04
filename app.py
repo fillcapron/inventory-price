@@ -9,12 +9,13 @@ CORS(app)
 @app.route('/api', methods=["POST"])
 def api():
     if request.method == 'POST':
-        res=json.loads(request.data)
-        data=Inventory(res['id'])
-        inv=data.get_inventory()
-        return jsonify(inv)
-    else:
-        return jsonify({'error': 'Do not get requests'})
+        try:
+            res=json.loads(request.data)
+            data=Inventory(res['id'], res['app'])
+            inv=data.get_inventory()
+            return jsonify(inv)
+        except ValueError:
+            return jsonify({'error': 'Введен неправильный steam ID'})
 
 @app.route('/market_search', methods=["GET"])
 def market():

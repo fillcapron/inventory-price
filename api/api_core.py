@@ -5,20 +5,17 @@ class Inventory:
     MARKET_API = 'http://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name='
     PROFILE_INVENTORY_API = 'profiles'
 
-    def __init__(self, req):
-        self.data = self.fetch(req)
+    def __init__(self, id, app):
+        self.data = self.fetch(id, app)
         self.rg_inventory = self.data['rgInventory']
         self.rg_descriptions = self.data['rgDescriptions']
 
-    def fetch(self, req):
+    def fetch(self, id, app):
         try:
-            response = requests.get(f'http://steamcommunity.com/profiles/{req}/inventory/json/730/2/')
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return {'rgInventory': None, 'rgDescriptions': None, 'error': 500}
-        except ValueError as ex:
-            return {'rgInventory': None, 'rgDescriptions': None, 'error': ex}
+            response = requests.get(f'http://steamcommunity.com/profiles/{id}/inventory/json/{app}/2/')
+            return response.json()
+        except:
+            raise ValueError
 
     def get_inventory(self):
         try:
