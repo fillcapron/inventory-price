@@ -7,35 +7,41 @@ class Inventory:
 
     def __init__(self, id, app):
         self.data = self.fetch(id, app)
-        self.rg_inventory = self.data['rgInventory']
-        self.rg_descriptions = self.data['rgDescriptions']
+        self.total_inventory_count = int(self.data['total_inventory_count'])
+        self.assets = self.data['assets']
+        self.descriptions = self.data['descriptions']
 
     def fetch(self, id, app):
+        context_id = '2' if app != '753' else '6'
         try:
-            response = requests.get(f'http://steamcommunity.com/profiles/{id}/inventory/json/{app}/2/')
-            print(response.json())
-            return response.json()
+            response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
+            if response.status_code == 200:
+                return response.json()
+            else:
+                raise
         except:
             raise ValueError
 
     def get_inventory(self):
-        if len(self.rg_inventory):
+        if self.total_inventory_count:
             items = []
-            for elem in self.rg_descriptions.values():
+            for elem in self.descriptions:
                 count = self.inv_count(elem.get('classid'))
-                items.append(
-                    {
-                        "classid": elem.get('classid'),
-                        "instanceid": elem.get('instanceid'),
-                        "market_name": elem.get('market_name'),
-                        "name": elem.get('name'),
-                        "market_hash_name": elem.get('market_hash_name'),
-                        "type": elem.get('type'),
-                        "description": elem.get('descriptions'),
-                        "icon_url": elem.get('icon_url'),
-                        "count": count
-                    }
-                )
+                if elem.get('marketable'):
+                    items.append(
+                        {
+                            "classid": elem.get('classid'),
+                            "instanceid": elem.get('instanceid'),
+                            "market_name": elem.get('market_name'),
+                            "name": elem.get('name'),
+                            "market_hash_name": elem.get('market_hash_name'),
+                            "type": elem.get('tags'),
+                            # "description": elem.get('descriptions'),
+                            "icon_url": elem.get('icon_url'),
+                            "count": count,
+                            # "price": get_price(elem.get('name'), 440)
+                        }
+                    )
             return items
         else:
             return []
@@ -46,7 +52,7 @@ class Inventory:
 
     def get_classid(self):
         classid_list = []
-        for id in self.rg_inventory.values():
+        for id in self.assets:
             if id.get('classid'):
                 clsid = id.get('classid')
                 classid_list.append(clsid)
@@ -59,10 +65,9 @@ def get_price(item_name, conversion):
         data = response.json()
         if data.get('items'):
             first_item_list = data.get('items')[0]
-            item_name_data = first_item_list.get('itemName')
             buy_price = first_item_list.get('buyPrice')
             sell_price = first_item_list.get('sellPrice')
-            return { "itemName": item_name_data, "buyPrice": buy_price, "sellPrice": sell_price}
+            return { "buyPrice": buy_price, "sellPrice": sell_price}
         else:
             return {'error': 'Price is None'}
     except ValueError as e:
