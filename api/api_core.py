@@ -13,7 +13,7 @@ class Inventory:
         self.total_inventory_marketable = 0
 
     def fetch(self, id, app):
-        context_id = '6' if app == 753 else '2'
+        context_id = '6' if app == '753' else '2'
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
             if response.status_code == 200:
