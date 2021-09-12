@@ -13,7 +13,7 @@ class Inventory:
         self.total_inventory_marketable = 0
 
     def fetch(self, id, app):
-        context_id = '2' if app != '753' else '6'
+        context_id = '6' if app == 753 else '2'
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
             if response.status_code == 200:
@@ -39,7 +39,7 @@ class Inventory:
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or None][0],
+                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or None],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
                             "count": count
