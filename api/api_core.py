@@ -1,19 +1,36 @@
 import requests
 
+app_context = {
+     '753': '2',
+     '440': '6',
+     '730': '2',
+     '570': '6',
+     '583950': '2',
+     '433850':'6',
+     '252490': '2',
+     '304930': '6',
+     '218620': '2',
+     '238460': '6',
+     '321360':'2',
+     '232090': '6',
+     '322330': '2',
+     '578080': '6'
+}
 
 class Inventory:
     MARKET_API = 'http://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name='
-    PROFILE_INVENTORY_API = 'profiles'
 
     def __init__(self, id, app=753):
         self.data = self.fetch(id, app)
         self.total_inventory_count = int(self.data['total_inventory_count'])
-        self.assets = self.data['assets']
-        self.descriptions = self.data['descriptions']
+        if self.total_inventory_count:
+            self.assets = self.data['assets']
+            self.descriptions = self.data['descriptions']
         self.total_inventory_marketable = 0
 
     def fetch(self, id, app):
-        context_id = '6' if app == '753' else '2'
+        context_id = app_context[app]
+        print(app, context_id)
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
             if response.status_code == 200:
