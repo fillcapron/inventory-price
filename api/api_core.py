@@ -5,11 +5,12 @@ class Inventory:
     MARKET_API = 'http://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name='
     PROFILE_INVENTORY_API = 'profiles'
 
-    def __init__(self, id, app):
+    def __init__(self, id, app=753):
         self.data = self.fetch(id, app)
         self.total_inventory_count = int(self.data['total_inventory_count'])
         self.assets = self.data['assets']
         self.descriptions = self.data['descriptions']
+        self.total_inventory_marketable = 0
 
     def fetch(self, id, app):
         context_id = '2' if app != '753' else '6'
@@ -25,24 +26,27 @@ class Inventory:
     def get_inventory(self):
         if self.total_inventory_count:
             items = []
+
             for elem in self.descriptions:
                 count = self.inv_count(elem.get('classid'))
                 if elem.get('marketable'):
+                    self.total_inventory_marketable += count
                     items.append(
                         {
+                            "appid": elem.get('appid'),
                             "classid": elem.get('classid'),
                             "instanceid": elem.get('instanceid'),
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity'][0],
-                            # "description": elem.get('descriptions'),
+                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or None][0],
+                            "description": [],
                             "icon_url": elem.get('icon_url'),
-                            "count": count,
-                            # "price": get_price(elem.get('name'), 440)
+                            "count": count
                         }
                     )
-            return items
+            data = {'total': self.total_inventory_marketable, 'items': items}
+            return data
         else:
             return []
 
@@ -67,7 +71,7 @@ def get_price(item_name, conversion):
             first_item_list = data.get('items')[0]
             buy_price = first_item_list.get('buyPrice')
             sell_price = first_item_list.get('sellPrice')
-            return { "buyPrice": buy_price, "sellPrice": sell_price}
+            return {"buyPrice": buy_price, "sellPrice": sell_price}
         else:
             return {'error': 'Price is None'}
     except ValueError as e:

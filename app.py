@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 from api.api_core import Inventory, get_price
 
+
 app = Flask(__name__)
 CORS(app)
 
@@ -17,11 +18,11 @@ def api():
         except ValueError:
             return jsonify({'error': 'Введен неправильный steam ID'})
 
-@app.route('/market_search', methods=["GET"])
+@app.route('/price', methods=["GET"])
 def market():
-    item_name = request.args.get('text', default='None', type=str)
-    conversion = request.args.get('conversion', default=440, type=int)
-    data = get_price(item_name, conversion)
+    item_name = request.args.get('name', default='None', type=str)
+    currency = request.args.get('conversion', default=3, type=int)
+    data = get_price(item_name, currency)
     return jsonify(data)
 
 if __name__ == '__main__':
