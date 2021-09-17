@@ -28,6 +28,7 @@ class Inventory:
             self.descriptions = self.data['descriptions']
         self.total_inventory_marketable = 0
 
+    @classmethod
     def fetch(self, id, app):
         context_id = app_context[app]
         print(app, context_id)
@@ -56,7 +57,7 @@ class Inventory:
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or None],
+                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or {}][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
                             "count": count
