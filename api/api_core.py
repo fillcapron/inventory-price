@@ -18,23 +18,23 @@ app_context = {
 }
 
 class Inventory:
-    MARKET_API = 'http://steamcommunity.com/market/priceoverview/?appid=730&currency=5&market_hash_name='
 
-    def __init__(self, id, app=753):
-        self.data = self.fetch(id, app)
-        if self.data['error']:
+    def __init__(self, steam_id, app=753):
+        self.data = self.fetch(steam_id, app)
+        if self.data.get('error'):
             self.error = True
-        if not self.error:
+        else:
+            self.error = False
             self.total_inventory_count = int(self.data['total_inventory_count'])
             self.assets = self.data['assets']
             self.descriptions = self.data['descriptions']
         self.total_inventory_marketable = 0
 
     @classmethod
-    def fetch(self, id, app):
+    def fetch(cls, steam_id, app):
         context_id = app_context[app]
         try:
-            response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
+            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/')
             if response.status_code == 403:
                 return {'error': 'Failed: Steam profile/inventory is set to private', 'items': None}
             if response.status_code == 200:
