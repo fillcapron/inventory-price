@@ -25,9 +25,9 @@ class Inventory:
             self.error = True
         else:
             self.error = False
-            self.total_inventory_count = int(self.data['total_inventory_count'])
-            self.assets = self.data['assets']
-            self.descriptions = self.data['descriptions']
+            self.total_inventory_count = int(self.data.get('total_inventory_count'))
+            self.assets = self.data.get('assets')
+            self.descriptions = self.data.get('descriptions')
         self.total_inventory_marketable = 0
 
     @classmethod
