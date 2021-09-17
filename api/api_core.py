@@ -4,7 +4,7 @@ app_context = {
      '753': '6',
      '440': '6',
      '730': '2',
-     '570': '6',
+     '570': '2',
      '583950': '2',
      '433850':'6',
      '252490': '2',
@@ -22,8 +22,10 @@ class Inventory:
 
     def __init__(self, id, app=753):
         self.data = self.fetch(id, app)
-        self.total_inventory_count = int(self.data['total_inventory_count'])
-        if self.total_inventory_count:
+        if self.data['error']:
+            self.error = True
+        if not self.error:
+            self.total_inventory_count = int(self.data['total_inventory_count'])
             self.assets = self.data['assets']
             self.descriptions = self.data['descriptions']
         self.total_inventory_marketable = 0
@@ -33,14 +35,18 @@ class Inventory:
         context_id = app_context[app]
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{id}/{app}/{context_id}/')
+            if response.status_code == 403:
+                return {'error': 'Failed: Steam profile/inventory is set to private', 'items': None}
             if response.status_code == 200:
                 return response.json()
             else:
-                raise
+                return {'error': 'Incorrect Steam ID', 'items': None}
         except:
-            raise ValueError
+            raise
 
     def get_inventory(self):
+        if self.error:
+            return self.data
         if self.total_inventory_count:
             items = []
             for elem in self.descriptions:

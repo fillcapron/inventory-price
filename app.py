@@ -15,8 +15,8 @@ def api():
             data=Inventory(res['id'], res['app'])
             inv=data.get_inventory()
             return jsonify(inv)
-        except ValueError:
-            return jsonify({'error': 'Введен неправильный steam ID'})
+        except:
+            return jsonify({'error': 'Bad request'})
 
 @app.route('/price', methods=["GET"])
 def market():
