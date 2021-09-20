@@ -61,7 +61,8 @@ class Inventory:
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or 'item_class'][0],
+                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or
+                                     el.get('category') == 'item_class'][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
                             "count": count
