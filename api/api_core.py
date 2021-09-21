@@ -102,7 +102,7 @@ def get_price(item_name, conversion):
 
 def get_profile(steamid):
     try:
-        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=353C3DB5C1075CFAF28A8BAB432EE96F&steamids={steamid}')
+        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=api&steamids={steamid}')
         data = response.json()
         response = data.get('response')
         players = response.get('players')
