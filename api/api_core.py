@@ -97,7 +97,7 @@ def get_price(item_name, conversion = 440):
         if data.get('items'):
             first_item_list = data.get('items')[0]
             sell_price = first_item_list.get('sellPrice')
-            return {"price": sell_price}
+            return sell_price
         else:
             return {'error': 'Price is None'}
     except ValueError as e:
