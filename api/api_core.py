@@ -16,6 +16,7 @@ app_context = {
      '322330': '2',
      '578080': '6'
 }
+web = 'C14D927D1E903A90CECFD838E8160785'
 
 
 class Inventory:
@@ -87,10 +88,11 @@ class Inventory:
         return classid_list
 
 
-def get_price(item_name, conversion):
+def get_price(item_name, conversion = 440):
     try:
         response = requests.get(f'https://csgo.backpack.tf/market_search?text={item_name}&conversion={conversion}')
         data = response.json()
+        print(response.json())
         if data.get('items'):
             first_item_list = data.get('items')[0]
             buy_price = first_item_list.get('buyPrice')
@@ -104,7 +106,7 @@ def get_price(item_name, conversion):
 
 def get_profile(steamid):
     try:
-        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=api&steamids={steamid}')
+        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}i&steamids={steamid}')
         data = response.json()
         response = data.get('response')
         players = response.get('players')
