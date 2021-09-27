@@ -31,6 +31,7 @@ class Inventory:
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
         self.total_inventory_marketable = 0
+        self.total_price = 0
 
     @classmethod
     def fetch(cls, steam_id, app, lang='russian'):
@@ -56,6 +57,7 @@ class Inventory:
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
                     price = get_price(elem.get('market_hash_name'))
+                    self.total_price += price * count
                     items.append(
                         {
                             "appid": elem.get('appid'),
@@ -72,7 +74,7 @@ class Inventory:
                             "price": price
                         }
                     )
-            data = {'total': self.total_inventory_marketable, 'items': items}
+            data = {'total_items': self.total_inventory_marketable, 'total_price': self.total_price,'items': items}
             return data
         else:
             return []
