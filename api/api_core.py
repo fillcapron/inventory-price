@@ -6,16 +6,17 @@ app_context = {
      '730': '2',
      '570': '2',
      '583950': '2',
-     '433850':'6',
+     '433850': '6',
      '252490': '2',
      '304930': '6',
      '218620': '2',
      '238460': '6',
-     '321360':'2',
+     '321360': '2',
      '232090': '6',
      '322330': '2',
      '578080': '6'
 }
+
 
 class Inventory:
 
@@ -100,9 +101,10 @@ def get_price(item_name, conversion):
     except ValueError as e:
         return {'error': e}
 
+
 def get_profile(steamid):
     try:
-        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=353C3DB5C1075CFAF28A8BAB432EE96F&steamids={steamid}')
+        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=api&steamids={steamid}')
         data = response.json()
         response = data.get('response')
         players = response.get('players')
