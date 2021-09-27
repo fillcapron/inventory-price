@@ -3,7 +3,6 @@ from flask_cors import CORS
 import json
 from api.api_core import Inventory, get_price, get_profile
 
-
 app = Flask(__name__)
 CORS(app)
 
@@ -21,7 +20,7 @@ def api():
 @app.route('/price', methods=["GET"])
 def market():
     item_name = request.args.get('name', default='None', type=str)
-    currency = request.args.get('conversion', default=3, type=int)
+    currency = request.args.get('conversion', default=440, type=int)
     data = get_price(item_name, currency)
     return jsonify(data)
 

@@ -31,10 +31,10 @@ class Inventory:
         self.total_inventory_marketable = 0
 
     @classmethod
-    def fetch(cls, steam_id, app):
+    def fetch(cls, steam_id, app, lang='russian'):
         context_id = app_context[app]
         try:
-            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/')
+            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l=${lang}')
             if response.status_code == 403:
                 return {'error': 'Failed: Steam profile/inventory is set to private', 'items': None}
             if response.status_code == 200:
@@ -117,5 +117,5 @@ def get_profile(steamid):
             }
         else:
             return {'error': 'Incorrect Steam ID'}
-    except ValueError as e:
-        return {'error': e}
+    except ValueError:
+        return {'error': 'Bar request'}
