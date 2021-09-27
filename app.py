@@ -6,16 +6,18 @@ from api.api_core import Inventory, get_price, get_profile
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/api', methods=["POST"])
 def api():
     if request.method == 'POST':
         try:
-            res=json.loads(request.data)
-            data=Inventory(res['id'], res['app'])
-            inv=data.get_inventory()
+            res = json.loads(request.data)
+            data = Inventory(res['id'], res['app'])
+            inv = data.get_inventory()
             return jsonify(inv)
         except:
             return jsonify({'error': 'Bad request'})
+
 
 @app.route('/price', methods=["GET"])
 def market():
@@ -29,6 +31,7 @@ def profile():
     steamid = request.args.get('steamid', type=int)
     data = get_profile(steamid)
     return jsonify(data)
+
 
 if __name__ == '__main__':
     app.run()

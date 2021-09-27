@@ -35,7 +35,7 @@ class Inventory:
     def fetch(cls, steam_id, app, lang='russian'):
         context_id = app_context[app]
         try:
-            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l=${lang}')
+            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}')
             if response.status_code == 403:
                 return {'error': 'Failed: Steam profile/inventory is set to private', 'items': None}
             if response.status_code == 200:
