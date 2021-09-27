@@ -55,6 +55,7 @@ class Inventory:
                 count = self.inv_count(elem.get('classid'))
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
+                    price = get_price(elem.get('market_hash_name'))
                     items.append(
                         {
                             "appid": elem.get('appid'),
@@ -67,7 +68,8 @@ class Inventory:
                                      el.get('category') == 'droprate'][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
-                            "count": count
+                            "count": count,
+                            "price": price
                         }
                     )
             data = {'total': self.total_inventory_marketable, 'items': items}
@@ -92,12 +94,10 @@ def get_price(item_name, conversion = 440):
     try:
         response = requests.get(f'https://csgo.backpack.tf/market_search?text={item_name}&conversion={conversion}')
         data = response.json()
-        print(response.json())
         if data.get('items'):
             first_item_list = data.get('items')[0]
-            buy_price = first_item_list.get('buyPrice')
             sell_price = first_item_list.get('sellPrice')
-            return {"buyPrice": buy_price, "sellPrice": sell_price}
+            return {"price": sell_price}
         else:
             return {'error': 'Price is None'}
     except ValueError as e:

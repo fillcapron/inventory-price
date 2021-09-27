@@ -19,7 +19,7 @@ def api():
             return jsonify({'error': 'Bad request'})
 
 
-@app.route('/price', methods=["GET"])
+@app.route('/price_item', methods=["GET"])
 def market():
     item_name = request.args.get('name', default='None', type=str)
     currency = request.args.get('conversion', default=440, type=int)
