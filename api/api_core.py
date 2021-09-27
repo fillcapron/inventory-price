@@ -106,7 +106,7 @@ def get_price(item_name, conversion = 440):
 
 def get_profile(steamid):
     try:
-        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}i&steamids={steamid}')
+        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}&steamids={steamid}')
         data = response.json()
         response = data.get('response')
         players = response.get('players')
@@ -122,4 +122,4 @@ def get_profile(steamid):
         else:
             return {'error': 'Incorrect Steam ID'}
     except ValueError:
-        return {'error': 'Bar request'}
+        return {'error': 'Bad request'}
