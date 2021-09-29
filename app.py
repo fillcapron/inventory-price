@@ -22,8 +22,9 @@ def api():
 @app.route('/price_item', methods=["GET"])
 def market():
     item_name = request.args.get('name', default='None', type=str)
-    currency = request.args.get('conversion', default=440, type=int)
-    data = get_price(item_name, currency)
+    app_id = request.args.get('app', default=730, type=int)
+    currency = request.args.get('currency', default=5, type=int)
+    data = get_price(item_name, app_id, currency)
     return jsonify(data)
 
 @app.route('/profile', methods=["GET"])

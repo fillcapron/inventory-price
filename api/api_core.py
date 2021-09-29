@@ -31,10 +31,8 @@ class Inventory:
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
         self.total_inventory_marketable = 0
-        self.total_price = 0
 
-    @classmethod
-    def fetch(cls, steam_id, app, lang='russian'):
+    def fetch(self, steam_id, app, lang='russian'):
         context_id = app_context[app]
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}')
@@ -56,8 +54,6 @@ class Inventory:
                 count = self.inv_count(elem.get('classid'))
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
-                    price = get_price(elem.get('market_hash_name'))
-                    self.total_price += price * count
                     items.append(
                         {
                             "appid": elem.get('appid'),
@@ -70,11 +66,10 @@ class Inventory:
                                      el.get('category') == 'droprate'][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
-                            "count": count,
-                            "price": price
+                            "count": count
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable, 'total_price': self.total_price,'items': items}
+            data = {'total_items': self.total_inventory_marketable,'items': items}
             return data
         else:
             return []
@@ -92,16 +87,14 @@ class Inventory:
         return classid_list
 
 
-def get_price(item_name, conversion = 440):
+def get_price(item_name, app_id, currency=5):
     try:
-        response = requests.get(f'https://csgo.backpack.tf/market_search?text={item_name}&conversion={conversion}')
+        response = requests.get(f'https://steamcommunity.com/market/priceoverview/?currency={currency}&country=us&appid={app_id}&market_hash_name={item_name}')
         data = response.json()
-        if data.get('items'):
-            first_item_list = data.get('items')[0]
-            sell_price = first_item_list.get('sellPrice')
-            return sell_price
+        if data.get('lowest_price'):
+            return data
         else:
-            return {'error': 'Price is None'}
+            return {'error': 'Request limit reached'}
     except ValueError as e:
         return {'error': e}
 
