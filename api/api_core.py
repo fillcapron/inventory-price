@@ -71,7 +71,7 @@ class Inventory:
                             "count": count
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable,'items': items, 'app': self.app}
+            data = {'total_items': self.total_inventory_marketable,'items': items, 'app': self.app, 'bg': generate_bg(self.app)}
             return data
         else:
             return []
@@ -120,3 +120,8 @@ def get_profile(steamid):
             return {'error': 'Incorrect Steam ID'}
     except ValueError:
         return {'error': 'Bad request'}
+
+def generate_bg(app):
+    id = app if app != '753' else 945360
+    bg = f'http://cdn.akamai.steamstatic.com/steam/apps/{id}/page_bg_generated_v6b.jpg?t=1633375869'
+    return bg
