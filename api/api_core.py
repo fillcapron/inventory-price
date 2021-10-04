@@ -22,6 +22,8 @@ web = 'C14D927D1E903A90CECFD838E8160785'
 class Inventory:
 
     def __init__(self, steam_id, app=753):
+        self.steam_id = steam_id
+        self.app = app
         self.data = self.fetch(steam_id, app)
         if self.data.get('error'):
             self.error = True
@@ -69,7 +71,7 @@ class Inventory:
                             "count": count
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable,'items': items}
+            data = {'total_items': self.total_inventory_marketable,'items': items, 'app': self.app}
             return data
         else:
             return []
