@@ -1,21 +1,29 @@
 import requests
 
 app_context = {
-     '753': '6',
-     '440': '6',
-     '730': '2',
-     '570': '2',
-     '583950': '2',
-     '433850': '6',
-     '252490': '2',
-     '304930': '6',
-     '218620': '2',
-     '238460': '6',
-     '321360': '2',
-     '232090': '6',
-     '322330': '2',
-     '578080': '6'
+    '753': '6',
+    '440': '6',
+    '730': '2',
+    '570': '2',
+    '583950': '2',
+    '433850': '6',
+    '252490': '2',
+    '304930': '6',
+    '218620': '2',
+    '238460': '6',
+    '321360': '2',
+    '232090': '6',
+    '322330': '2',
+    '578080': '6'
 }
+
+url_app_prices = {
+    440: 'https://tf2.tm/api/v2/prices/RUB.json',
+    730: 'https://market.csgo.com/api/v2/prices/RUB.json',
+    570: 'https://market.dota2.net/api/v2/prices/RUB.json',
+    252490: 'https://rust.tm/api/v2/prices/RUB.json'
+}
+
 web = 'C14D927D1E903A90CECFD838E8160785'
 
 
@@ -56,6 +64,7 @@ class Inventory:
                 count = self.inv_count(elem.get('classid'))
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
+                    price_item = self.get_price_api(elem.get('market_hash_name'))
                     items.append(
                         {
                             "appid": elem.get('appid'),
@@ -68,10 +77,12 @@ class Inventory:
                                      el.get('category') == 'droprate'][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
-                            "count": count
+                            "count": count,
+                            "price": price_item
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable,'items': items, 'app': self.app, 'bg': generate_bg(self.app)}
+            data = {'total_items': self.total_inventory_marketable, 'items': items, 'app': self.app,
+                    'bg': self.generate_bg()}
             return data
         else:
             return []
@@ -88,10 +99,27 @@ class Inventory:
                 classid_list.append(clsid)
         return classid_list
 
+    def generate_bg(self):
+        id = self.app if self.app != '753' else 945360
+        bg = f'http://cdn.akamai.steamstatic.com/steam/apps/{id}/page_bg_generated_v6b.jpg?t=1633375869'
+        return bg
+
+    def get_price_api(self, item_name):
+        url = url_app_prices.get(self.app)
+        if url:
+            res = requests.get(url).json()
+            items = res.get('items')
+            for item in items:
+                if item.get('market_hash_name') == item_name:
+                    return item.get('price')
+        else:
+            return 0
+
 
 def get_price(item_name, app_id, currency=5):
     try:
-        response = requests.get(f'https://steamcommunity.com/market/priceoverview/?currency={currency}&country=us&appid={app_id}&market_hash_name={item_name}')
+        response = requests.get(
+            f'https://steamcommunity.com/market/priceoverview/?currency={currency}&country=us&appid={app_id}&market_hash_name={item_name}')
         data = response.json()
         if data.get('lowest_price'):
             return data
@@ -103,7 +131,8 @@ def get_price(item_name, app_id, currency=5):
 
 def get_profile(steamid):
     try:
-        response = requests.get(f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}&steamids={steamid}')
+        response = requests.get(
+            f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}&steamids={steamid}')
         data = response.json()
         response = data.get('response')
         players = response.get('players')
@@ -120,8 +149,3 @@ def get_profile(steamid):
             return {'error': 'Incorrect Steam ID'}
     except ValueError:
         return {'error': 'Bad request'}
-
-def generate_bg(app):
-    id = app if app != '753' else 945360
-    bg = f'http://cdn.akamai.steamstatic.com/steam/apps/{id}/page_bg_generated_v6b.jpg?t=1633375869'
-    return bg
