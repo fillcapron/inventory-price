@@ -83,7 +83,7 @@ class Inventory:
                             "price": price_item
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable, 'items': items, 'app': self.app,
+            data = {'total_items': self.total_inventory_marketable, 'total_price': self.total_price, 'items': items, 'app': self.app,
                     'bg': self.generate_bg()}
             return data
         else:
