@@ -17,7 +17,7 @@ app_context = {
     '578080': '6'
 }
 
-url_app_prices = {
+bd_price = {
     440: 'https://tf2.tm/api/v2/prices/RUB.json',
     730: 'https://market.csgo.com/api/v2/prices/RUB.json',
     570: 'https://market.dota2.net/api/v2/prices/RUB.json',
@@ -30,7 +30,6 @@ web = 'C14D927D1E903A90CECFD838E8160785'
 class Inventory:
 
     def __init__(self, steam_id, app=753):
-        self.steam_id = steam_id
         self.app = int(app)
         self.data = self.fetch(steam_id, app)
         if self.data.get('error'):
@@ -40,6 +39,7 @@ class Inventory:
             self.total_inventory_count = int(self.data.get('total_inventory_count'))
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
+            self.price_db = requests.get(bd_price.get(self.app)).json()
         self.total_inventory_marketable = 0
         self.total_price = 0
 
@@ -66,7 +66,7 @@ class Inventory:
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
                     price_item = self.get_price_api(elem.get('market_hash_name'))
-                    self.total_price += price_item
+                    self.total_price += price_item * count
                     items.append(
                         {
                             "appid": elem.get('appid'),
@@ -83,7 +83,8 @@ class Inventory:
                             "price": price_item
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable, 'total_price': self.total_price, 'items': items, 'app': self.app,
+            data = {'total_items': self.total_inventory_marketable, 'total_price': int(self.total_price), 'items': items,
+                    'app': self.app,
                     'bg': self.generate_bg()}
             return data
         else:
@@ -107,15 +108,12 @@ class Inventory:
         return bg
 
     def get_price_api(self, item_name):
-        url = url_app_prices.get(self.app)
-        if url:
-            res = requests.get(url).json()
-            items = res.get('items')
+        if self.price_db:
+            items = self.price_db.get('items')
             for item in items:
                 if item.get('market_hash_name') == item_name:
-                    return item.get('price')
-        else:
-            return 0
+                    return float(item.get('price'))
+        return 0
 
 
 def get_price(item_name, app_id, currency=5):
