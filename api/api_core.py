@@ -31,7 +31,7 @@ class Inventory:
 
     def __init__(self, steam_id, app=753):
         self.steam_id = steam_id
-        self.app = app
+        self.app = int(app)
         self.data = self.fetch(steam_id, app)
         if self.data.get('error'):
             self.error = True
@@ -41,6 +41,7 @@ class Inventory:
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
         self.total_inventory_marketable = 0
+        self.total_price = 0
 
     def fetch(self, steam_id, app, lang='russian'):
         context_id = app_context[app]
@@ -65,6 +66,7 @@ class Inventory:
                 if elem.get('marketable'):
                     self.total_inventory_marketable += count
                     price_item = self.get_price_api(elem.get('market_hash_name'))
+                    self.total_price += price_item
                     items.append(
                         {
                             "appid": elem.get('appid'),
