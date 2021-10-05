@@ -39,7 +39,7 @@ class Inventory:
             self.total_inventory_count = int(self.data.get('total_inventory_count'))
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
-            self.price_db = requests.get(bd_price.get(self.app)).json()
+            self.price_db = requests.get(bd_price.get(self.app)).json() if bd_price.get(self.app) else None
         self.total_inventory_marketable = 0
         self.total_price = 0
 
@@ -83,7 +83,8 @@ class Inventory:
                             "price": price_item
                         }
                     )
-            data = {'total_items': self.total_inventory_marketable, 'total_price': int(self.total_price), 'items': items,
+            data = {'total_items': self.total_inventory_marketable, 'total_price': int(self.total_price),
+                    'items': items,
                     'app': self.app,
                     'bg': self.generate_bg()}
             return data
