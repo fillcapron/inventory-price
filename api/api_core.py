@@ -1,4 +1,5 @@
 import requests
+import re
 
 app_context = {
     '753': '6',
@@ -126,6 +127,7 @@ class Inventory:
 
 
 def get_price(item_name, app_id, currency=5):
+    item_name = re.sub("#", r"%23", item_name)
     try:
         response = requests.get(
             f'https://steamcommunity.com/market/priceoverview/?currency={currency}&country=us&appid={app_id}&market_hash_name={item_name}')
