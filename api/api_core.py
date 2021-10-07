@@ -2,19 +2,19 @@ import requests
 
 app_context = {
     '753': '6',
-    '440': '6',
+    '440': '2',
     '730': '2',
     '570': '2',
     '583950': '2',
-    '433850': '6',
+    '433850': '2',
     '252490': '2',
-    '304930': '6',
+    '304930': '2',
     '218620': '2',
-    '238460': '6',
+    '238460': '2',
     '321360': '2',
-    '232090': '6',
+    '232090': '2',
     '322330': '2',
-    '578080': '6'
+    '578080': '2'
 }
 
 bd_price = {
@@ -75,13 +75,17 @@ class Inventory:
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "rarity": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or
-                                     el.get('category') == 'droprate'][0],
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Type' or
-                                     el.get('category') == 'item_class'][0],
-                            "quality": [el for el in elem.get('tags') if el.get('category') == 'Quality' or
-                                     el.get('category') == 'Game'][0],
-                            "description": [],
+                            "rarity": [el for el in elem.get('tags') or [] if el.get('category') == 'Rarity' or
+                                       el.get('category') == 'droprate'],
+                            "type": [el for el in elem.get('tags') or [] if el.get('category') == 'Type' or
+                                     el.get('category') == 'item_class'] or elem.get('type'),
+                            "quality": [el for el in elem.get('tags') or [] if el.get('category') == 'Quality' or
+                                        el.get('category') == 'Game'],
+                            "description": [
+                                el for el in elem.get('tags') or [] if
+                                             el.get('category') == 'Exterior' or el.get('category') == 'Hero' or el.get(
+                                                 'category') == 'Class'
+                            ],
                             "icon_url": elem.get('icon_url'),
                             "count": count,
                             "price": price_item
