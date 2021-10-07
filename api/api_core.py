@@ -75,8 +75,12 @@ class Inventory:
                             "market_name": elem.get('market_name'),
                             "name": elem.get('name'),
                             "market_hash_name": elem.get('market_hash_name'),
-                            "type": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or
+                            "Rarity": [el for el in elem.get('tags') if el.get('category') == 'Rarity' or
                                      el.get('category') == 'droprate'][0],
+                            "Type": [el for el in elem.get('tags') if el.get('category') == 'Type' or
+                                     el.get('category') == 'item_class'][0],
+                            "Quality": [el for el in elem.get('tags') if el.get('category') == 'Quality' or
+                                     el.get('category') == 'Game'][0],
                             "description": [],
                             "icon_url": elem.get('icon_url'),
                             "count": count,
