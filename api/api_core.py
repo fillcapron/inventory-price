@@ -82,7 +82,8 @@ class Inventory:
                                      el.get('category') == 'item_class'] or elem.get('type'),
                             "quality": [el for el in elem.get('tags') or [] if el.get('category') == 'Quality' or
                                         el.get('category') == 'Game'],
-                            "description": [
+                            "description": elem.get('description'),
+                            "meta": [
                                 el for el in elem.get('tags') or [] if
                                              el.get('category') == 'Exterior' or el.get('category') == 'Hero' or el.get(
                                                  'category') == 'Class'
