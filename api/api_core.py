@@ -46,6 +46,10 @@ class Inventory:
 
     def fetch(self, steam_id, app, lang='russian'):
         context_id = app_context[app]
+        id = steam_id.isdigit()
+        if(not id):
+            received_id = requests.get(f'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={web}&vanityurl={steam_id}').json()
+            steam_id = received_id.get('response').get('steamid')
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}')
             if response.status_code == 403:
