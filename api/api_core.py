@@ -144,7 +144,7 @@ class Inventory:
         Метод генерирации фона по конкретному приложению
         :return: Ссылка
         """
-        id = self.app if self.app != '753' else 945360
+        id = self.app if self.app != 753 else 945360
         bg = f'http://cdn.akamai.steamstatic.com/steam/apps/{id}/page_bg_generated_v6b.jpg?t=1633375869'
         return bg
 
