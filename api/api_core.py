@@ -43,9 +43,6 @@ class Inventory:
         self.app = app
         self.data = self.fetch(self.steam_id, self.app)
         self.error = self.data.get('error', False)
-        # if self.data.get('error'):
-        #     self.error = True
-        # else:
         if not self.error:
             # self.error = False
             self.total_inventory_count = int(self.data.get('total_inventory_count'))
