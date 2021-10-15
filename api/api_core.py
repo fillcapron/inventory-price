@@ -1,5 +1,6 @@
 import requests
 import urllib.parse
+import time
 
 app_context = {
     '753': '6',
@@ -60,12 +61,16 @@ class Inventory:
         :param lang: Язык на котором будет получен ответ (по умолчанию "русский")
         :return: Словарь ответа или ошибка
         """
-        context_id = app_context[app]
+        context_id = app_context.get(app)
         try:
             response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
                                     headers=headers)
-            if response.status_code == 403:
-                return {'error': 'Ошибка: Стим профиль или инвентарь запривачен', 'items': None}
+            if not response.ok:
+                time.sleep(5) #Временное решение, Steam API блокирует последовательные запросы
+                response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
+                                        headers=headers)
+                if response.status_code == 403:
+                    return {'error': 'Ошибка: Стим профиль или инвентарь запривачен', 'items': None}
             if response.status_code == 200:
                 return response.json()
             else:
