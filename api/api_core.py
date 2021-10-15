@@ -18,11 +18,14 @@ app_context = {
     '578080': '2'
 }
 
+headers = {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36'}
+
 bd_price = {
-    440: 'https://tf2.tm/api/v2/prices/RUB.json',
-    730: 'https://market.csgo.com/api/v2/prices/RUB.json',
-    570: 'https://market.dota2.net/api/v2/prices/RUB.json',
-    252490: 'https://rust.tm/api/v2/prices/RUB.json'
+    '440': 'https://tf2.tm/api/v2/prices/RUB.json',
+    '730': 'https://market.csgo.com/api/v2/prices/RUB.json',
+    '570': 'https://market.dota2.net/api/v2/prices/RUB.json',
+    '252490': 'https://rust.tm/api/v2/prices/RUB.json'
 }
 
 web = 'C14D927D1E903A90CECFD838E8160785'
@@ -30,14 +33,15 @@ web = 'C14D927D1E903A90CECFD838E8160785'
 
 class Inventory:
 
-    def __init__(self, steam_id, app=753):
+    def __init__(self, steam_id, app='753'):
         """
         Конструктор при создании экземпляра класса Inventory
         :param steam_id: Стим айди профиля или ссылка на профиль
         :param app: ID приложения (например CSGO - 730)
         """
-        self.app = int(app)
-        self.data = self.fetch(steam_id, app)
+        self.steam_id = check_id(steam_id)
+        self.app = app
+        self.data = self.fetch(self.steam_id, self.app)
         if self.data.get('error'):
             self.error = True
         else:
@@ -58,9 +62,9 @@ class Inventory:
         :return: Словарь ответа или ошибка
         """
         context_id = app_context[app]
-        steam_id = get_id(steam_id)
         try:
-            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}')
+            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
+                                    headers=headers)
             if response.status_code == 403:
                 return {'error': 'Ошибка: Стим профиль или инвентарь запривачен', 'items': None}
             if response.status_code == 200:
@@ -144,7 +148,7 @@ class Inventory:
         Метод генерирации фона по конкретному приложению
         :return: Ссылка
         """
-        id = self.app if self.app != 753 else 945360
+        id = self.app if self.app != '753' else '945360'
         bg = f'http://cdn.akamai.steamstatic.com/steam/apps/{id}/page_bg_generated_v6b.jpg?t=1633375869'
         return bg
 
@@ -210,7 +214,7 @@ def get_profile(steamid):
         return {'error': 'Непрвильный запрос'}
 
 
-def get_id(steam_id):
+def check_id(steam_id):
     """
     Метод работы со Steam ID
     :param steam_id: id или url
@@ -243,5 +247,5 @@ def received_id(vanityurl):
     :return: Steam ID
     """
     received_res = requests.get(
-            f'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={web}&vanityurl={vanityurl}').json()
+        f'http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key={web}&vanityurl={vanityurl}').json()
     return received_res.get('response').get('steamid')
