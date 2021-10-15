@@ -29,7 +29,7 @@ def market():
 
 @app.route('/profile', methods=["GET"])
 def profile():
-    steamid = request.args.get('steamid', type=int)
+    steamid = request.args.get('steamid')
     data = get_profile(steamid)
     return jsonify(data)
 

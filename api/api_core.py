@@ -42,10 +42,12 @@ class Inventory:
         self.steam_id = check_id(steam_id)
         self.app = app
         self.data = self.fetch(self.steam_id, self.app)
-        if self.data.get('error'):
-            self.error = True
-        else:
-            self.error = False
+        self.error = self.data.get('error', False)
+        # if self.data.get('error'):
+        #     self.error = True
+        # else:
+        if not self.error:
+            # self.error = False
             self.total_inventory_count = int(self.data.get('total_inventory_count'))
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
@@ -194,6 +196,7 @@ def get_profile(steamid):
     :return: Словарь с данными профиля
     """
     try:
+        steamid = check_id(steamid)
         response = requests.get(
             f'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={web}&steamids={steamid}')
         data = response.json()
