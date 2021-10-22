@@ -24,6 +24,7 @@ def api():
 
 
 @app.route('/price_item', methods=["GET"])
+@cache.cached(timeout=300) # кэширование запроса 5 минут
 def market():
     item_name = request.args.get('name', default='None', type=str)
     app_id = request.args.get('app', default=730, type=int)
@@ -32,6 +33,7 @@ def market():
     return jsonify(data)
 
 @app.route('/profile', methods=["GET"])
+@cache.cached(timeout=300) # кэширование запроса 5 минут
 def profile():
     steamid = request.args.get('steamid')
     data = get_profile(steamid)
