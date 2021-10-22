@@ -66,7 +66,7 @@ class Inventory:
             response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
                                     headers=headers)
             if not response.ok:
-                time.sleep(5) #Временное решение, Steam API блокирует последовательные запросы
+                time.sleep(5) #Временное решение, Steam API иногда
                 response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
                                         headers=headers)
                 if response.status_code == 403:

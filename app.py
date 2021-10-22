@@ -1,13 +1,17 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_caching import Cache
 import json
 from api.api_core import Inventory, get_price, get_profile
 
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 app = Flask(__name__)
+cache.init_app(app)
 CORS(app)
 
 
 @app.route('/api', methods=["POST"])
+@cache.cached(timeout=300) # кэширование запроса 5 минут
 def api():
     if request.method == 'POST':
         try:
