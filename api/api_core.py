@@ -90,7 +90,7 @@ class Inventory:
             items = []
             for elem in self.descriptions:
                 count = self.inv_count(elem.get('classid'))
-                if elem.get('commodity'):
+                if elem.get('marketable'):
                     self.total_inventory_marketable += count
                     price_item = self.get_price_api(elem.get('market_hash_name'))
                     self.total_price += price_item * count
