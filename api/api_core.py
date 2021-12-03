@@ -31,6 +31,8 @@ bd_price = {
 
 web = 'C14D927D1E903A90CECFD838E8160785'
 
+#more_items
+#last_assetid
 
 class Inventory:
 
@@ -45,7 +47,6 @@ class Inventory:
         self.data = self.fetch(self.steam_id, self.app)
         self.error = self.data.get('error', False)
         if not self.error:
-            # self.error = False
             self.total_inventory_count = int(self.data.get('total_inventory_count'))
             self.assets = self.data.get('assets')
             self.descriptions = self.data.get('descriptions')
@@ -63,11 +64,11 @@ class Inventory:
         """
         context_id = app_context.get(app)
         try:
-            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
+            response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}&count=5000',
                                     headers=headers)
             if not response.ok:
                 time.sleep(5) #Временное решение, Steam API иногда
-                response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}',
+                response = requests.get(f'http://steamcommunity.com/inventory/{steam_id}/{app}/{context_id}/?l={lang}&count=5000',
                                         headers=headers)
                 if response.status_code == 403:
                     return {'error': 'Ошибка: Стим профиль или инвентарь запривачен', 'items': None}
@@ -89,7 +90,7 @@ class Inventory:
             items = []
             for elem in self.descriptions:
                 count = self.inv_count(elem.get('classid'))
-                if elem.get('marketable'):
+                if elem.get('commodity'):
                     self.total_inventory_marketable += count
                     price_item = self.get_price_api(elem.get('market_hash_name'))
                     self.total_price += price_item * count
